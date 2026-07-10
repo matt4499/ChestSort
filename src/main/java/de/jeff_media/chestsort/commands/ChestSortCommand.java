@@ -5,7 +5,8 @@ import de.jeff_media.chestsort.config.Messages;
 import de.jeff_media.chestsort.data.PlayerSetting;
 import de.jeff_media.chestsort.gui.NewUI;
 import de.jeff_media.chestsort.handlers.Debugger;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,65 +16,62 @@ import org.jetbrains.annotations.NotNull;
 
 public class ChestSortCommand implements CommandExecutor {
 
-    final String noPermission;
     private final ChestSortPlugin plugin;
 
     public ChestSortCommand(ChestSortPlugin plugin) {
         this.plugin = plugin;
-        noPermission = plugin.getCommand("sort").getPermissionMessage();
     }
 
-    private void sendNoPermissionMessage(CommandSender sender) {
-        if (noPermission != null && noPermission.length() > 0) {
-            sender.sendMessage(noPermission);
+    private void sendNoPermissionMessage(CommandSender sender, Command command) {
+        Component message = command.permissionMessage();
+        if (message != null) {
+            sender.sendMessage(message);
         }
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
-
-        // This command toggles automatic chest sorting for the player that runs the command
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!command.getName().equalsIgnoreCase("sort")) {
             return false;
         }
 
         if (!plugin.getConfig().getBoolean("allow-commands") && !sender.isOp()) {
-            sendNoPermissionMessage(sender);
+            sendNoPermissionMessage(sender, command);
             return true;
         }
 
-        //System.out.println(1);
-        if(sender.hasPermission("chestsort.resetplayersettings") && args.length > 0 && args[0].equalsIgnoreCase("resetplayersettings")) {
-            for(Player online : Bukkit.getOnlinePlayers()) {
+        if (args.length > 0 && args[0].equalsIgnoreCase("resetplayersettings")) {
+            if (!sender.hasPermission("chestsort.resetplayersettings")) {
+                sendNoPermissionMessage(sender, command);
+                return true;
+            }
+            for (Player online : Bukkit.getOnlinePlayers()) {
                 plugin.unregisterPlayer(online);
             }
             plugin.incrementFingerprint();
-            sender.sendMessage("§cAll player settings have been reset!");
+            sender.sendMessage(Component.text("All player settings have been reset!", NamedTextColor.RED));
             return true;
         }
-        //System.out.println(2);
 
-        // Reload command
         if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("chestsort.reload")) {
-                sendNoPermissionMessage(sender);
+                sendNoPermissionMessage(sender, command);
                 return true;
             }
-            sender.sendMessage(ChatColor.GRAY + "Reloading ChestSort...");
+            sender.sendMessage(Component.text("Reloading ChestSort...", NamedTextColor.GRAY));
             plugin.load(true);
-            sender.sendMessage(ChatColor.GREEN + "ChestSort has been reloaded.");
+            sender.sendMessage(Component.text("ChestSort has been reloaded.", NamedTextColor.GREEN));
             return true;
         }
 
-        // Debug command
         if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
             if (!sender.hasPermission("chestsort.debug")) {
-                sendNoPermissionMessage(sender);
+                sendNoPermissionMessage(sender, command);
+                return true;
             }
-            sender.sendMessage(ChatColor.RED + "ChestSort Debug mode enabled - I hope you know what you are doing!");
+            sender.sendMessage(Component.text("ChestSort Debug mode enabled - I hope you know what you are doing!", NamedTextColor.RED));
             plugin.setDebug(true);
-            Debugger debugger = new Debugger(plugin);
-            plugin.getServer().getPluginManager().registerEvents(debugger, plugin);
+            plugin.getServer().getPluginManager().registerEvents(new Debugger(plugin), plugin);
             plugin.debug("Debug mode activated through command by " + sender.getName());
             return true;
         }
@@ -82,89 +80,53 @@ public class ChestSortCommand implements CommandExecutor {
             return false;
         }
 
-        if (!(sender instanceof Player)) {
-
-            if (args.length != 0) {
-                if (args[0].equalsIgnoreCase("debug")) {
-                    plugin.setDebug(true);
-                    plugin.getLogger().info("ChestSort debug mode enabled.");
-                    return true;
-                }
+        if (!(sender instanceof Player p)) {
+            if (args.length != 0 && args[0].equalsIgnoreCase("debug")) {
+                plugin.setDebug(true);
+                plugin.getLogger().info("ChestSort debug mode enabled.");
+                return true;
             }
-
-            sender.sendMessage(Messages.MSG_PLAYERSONLY);
+            sender.sendMessage(Messages.PLAYERS_ONLY);
             return true;
         }
 
-        Player p = (Player) sender;
-
-        // fix for Spigot's stupid /reload function
         plugin.registerPlayerIfNeeded(p);
 
-        if (!plugin.getConfig().getBoolean("allow-automatic-sorting")) args = new String[]{"hotkeys"};
-
-        if(!p.hasPermission("chestsort.automatic")) args = new String[]{"hotkeys"};
-
-        if(args.length==0 && plugin.getConfig().getBoolean("allow-gui",true) == false) {
-            args = new String[] {"toggle"};
+        if (!plugin.getConfig().getBoolean("allow-automatic-sorting") || !p.hasPermission("chestsort.automatic")) {
+            args = new String[]{"hotkeys"};
         }
 
-        if(args.length > 0 && (args[0].equalsIgnoreCase("hotkeys") || args[0].equalsIgnoreCase("hotkey"))) {
+        if (args.length == 0 && !plugin.getConfig().getBoolean("allow-gui", true)) {
+            args = new String[]{"toggle"};
+        }
+
+        if (args.length > 0 && (args[0].equalsIgnoreCase("hotkeys") || args[0].equalsIgnoreCase("hotkey"))) {
             new NewUI(p).showGUI();
             return true;
         }
 
-        // Settings GUI
-        /*if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("hotkey") || args[0].equalsIgnoreCase("hotkeys")) {
-
-                if (!plugin.isHotkeyGUI()) {
-                    p.sendMessage(Messages.MSG_ERR_HOTKEYSDISABLED);
-                    return true;
-                }
-
-                plugin.getSettingsGUI().openGUI(p);
-
-                return true;
-            }
-
-        }*/
-        // Settings GUI End
-
         PlayerSetting setting = plugin.getPerPlayerSettings().get(p.getUniqueId().toString());
 
         if (args.length > 0 && !args[0].equalsIgnoreCase("toggle") && !args[0].equalsIgnoreCase("on") && !args[0].equalsIgnoreCase("off")) {
-            p.sendMessage(String.format(Messages.MSG_INVALIDOPTIONS, "\"" + args[0] + "\"", "\"toggle\", \"on\", \"off\", \"hotkeys\""));
+            p.sendMessage(Messages.invalidOptions("\"" + args[0] + "\"", "\"toggle\", \"on\", \"off\", \"hotkeys\""));
             return true;
         }
 
-        if(args.length > 0) {
-            if (args[0].equalsIgnoreCase("toggle")) {
-                setting.toggleChestSorting();
-            } else if (args[0].equalsIgnoreCase("on")) {
-                setting.enableChestSorting();
-            } else if (args[0].equalsIgnoreCase("off")) {
-                setting.disableChestSorting();
+        if (args.length > 0) {
+            switch (args[0].toLowerCase()) {
+                case "toggle" -> setting.toggleChestSorting();
+                case "on" -> setting.enableChestSorting();
+                case "off" -> setting.disableChestSorting();
+                default -> {
+                }
             }
             setting.hasSeenMessage = true;
-            if(setting.sortingEnabled) {
-                p.sendMessage(Messages.MSG_ACTIVATED);
-            } else {
-                p.sendMessage(Messages.MSG_DEACTIVATED);
-            }
+            p.sendMessage(setting.sortingEnabled ? Messages.ACTIVATED : Messages.DEACTIVATED);
             return true;
         }
+
         setting.hasSeenMessage = true;
-
-        /*if (setting.sortingEnabled) {
-            p.sendMessage(Messages.MSG_ACTIVATED);
-        } else {
-            p.sendMessage(Messages.MSG_DEACTIVATED);
-        }*/
-
         new NewUI(p).showGUI();
-
         return true;
     }
-
 }

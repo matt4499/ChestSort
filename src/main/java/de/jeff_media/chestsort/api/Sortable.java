@@ -9,36 +9,37 @@ import org.jetbrains.annotations.Nullable;
  * Public class that can be used as InventoryHolder to tell ChestSort that the associated inventory is sortable.
  */
 public class Sortable implements ISortable {
+
     private Inventory inv;
-    private InventoryHolder h = null;
+    private InventoryHolder holder;
 
     public Sortable() {
-
     }
 
-    public Sortable(InventoryHolder h) {
-        this.h=h;
+    public Sortable(@Nullable InventoryHolder holder) {
+        this.holder = holder;
     }
 
-    public void setHolder(@NotNull InventoryHolder player) {
-        this.h=h;
+    public void setHolder(@NotNull InventoryHolder holder) {
+        this.holder = holder;
     }
 
     public void removeHolder() {
-        this.h=null;
+        this.holder = null;
     }
 
     @Nullable
     public InventoryHolder getHolder() {
-        return h;
+        return holder;
     }
 
     @Override
+    @Nullable
     public Inventory getInventory() {
         return inv;
     }
 
-    public void setInventory(Inventory inv) {
-        this.inv=inv;
+    public void setInventory(@NotNull Inventory inv) {
+        this.inv = inv;
     }
 }

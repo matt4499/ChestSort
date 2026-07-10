@@ -9,79 +9,63 @@ import java.util.Locale;
 public enum Hotkey {
 
     AUTO_SORT, AUTO_INV_SORT,
-    SHIFT_CLICK,
-    MIDDLE_CLICK, DOUBLE_CLICK, SHIFT_RIGHT_CLICK,
+    SHIFT_CLICK, MIDDLE_CLICK, DOUBLE_CLICK, SHIFT_RIGHT_CLICK,
     OUTSIDE, LEFT_CLICK, RIGHT_CLICK;
 
-    private static final ChestSortPlugin main = ChestSortPlugin.getInstance();
-
     public boolean hasPermission(Player player) {
-        if(!player.hasPermission(getPermission(this))) return false;
-        switch(this) {
-            case AUTO_SORT:
-                return main.getConfig().getBoolean("allow-automatic-sorting");
-            case AUTO_INV_SORT:
-                return main.getConfig().getBoolean("allow-automatic-inventory-sorting");
-            case SHIFT_CLICK:
-            case MIDDLE_CLICK:
-            case DOUBLE_CLICK:
-            case SHIFT_RIGHT_CLICK:
-                return main.getConfig().getBoolean("allow-sorting-hotkeys");
-            case LEFT_CLICK:
-            case RIGHT_CLICK:
-                return main.getConfig().getBoolean("allow-additional-hotkeys");
-            case OUTSIDE:
-                return main.getConfig().getBoolean("allow-left-click-to-sort");
-            default:
-                throw new IllegalArgumentException("Invalid hotkey: " + this.name());
+        if (!player.hasPermission(getPermission(this))) {
+            return false;
         }
+        var config = ChestSortPlugin.getInstance().getConfig();
+        return switch (this) {
+            case AUTO_SORT -> config.getBoolean("allow-automatic-sorting");
+            case AUTO_INV_SORT -> config.getBoolean("allow-automatic-inventory-sorting");
+            case SHIFT_CLICK, MIDDLE_CLICK, DOUBLE_CLICK, SHIFT_RIGHT_CLICK -> config.getBoolean("allow-sorting-hotkeys");
+            case LEFT_CLICK, RIGHT_CLICK -> config.getBoolean("allow-additional-hotkeys");
+            case OUTSIDE -> config.getBoolean("allow-left-click-to-sort");
+        };
     }
 
     public static String getPermission(Hotkey hotkey) {
-
-        if(hotkey == AUTO_SORT) {
+        if (hotkey == AUTO_SORT) {
             return "chestsort.use";
         }
-
-        if(hotkey == AUTO_INV_SORT) {
+        if (hotkey == AUTO_INV_SORT) {
             return "chestsort.use.inventory";
         }
-
-        String permission = "chestsort.hotkey." + hotkey.name().toLowerCase(Locale.ROOT).replace("_", "");
-        //System.out.println("Permission for " + hotkey.name()+ ": " + permission);
-        return permission;
+        return "chestsort.hotkey." + hotkey.name().toLowerCase(Locale.ROOT).replace("_", "");
     }
 
     public static Hotkey fromPermission(String permission) {
-        //System.out.println("Checking permission " + permission + " and returning the proper hotkey...");
-        if(permission == null) return null;
-        switch(permission) {
-            case "shiftclick": return SHIFT_CLICK;
-            case "middleclick": return MIDDLE_CLICK;
-            case "doubleclick": return DOUBLE_CLICK;
-            case "shiftrightclick": return SHIFT_RIGHT_CLICK;
-            case "leftclick": return LEFT_CLICK;
-            case "rightclick": return RIGHT_CLICK;
-            case "outside": return OUTSIDE;
-            case "autosorting": return AUTO_SORT;
-            case "autoinvsorting": return AUTO_INV_SORT;
-            default: return null;
+        if (permission == null) {
+            return null;
         }
+        return switch (permission) {
+            case "shiftclick" -> SHIFT_CLICK;
+            case "middleclick" -> MIDDLE_CLICK;
+            case "doubleclick" -> DOUBLE_CLICK;
+            case "shiftrightclick" -> SHIFT_RIGHT_CLICK;
+            case "leftclick" -> LEFT_CLICK;
+            case "rightclick" -> RIGHT_CLICK;
+            case "outside" -> OUTSIDE;
+            case "autosorting" -> AUTO_SORT;
+            case "autoinvsorting" -> AUTO_INV_SORT;
+            default -> null;
+        };
     }
 
     public boolean hasEnabled(Player player) {
         PlayerSetting setting = ChestSortPlugin.getInstance().getPlayerSetting(player);
-        switch(this) {
-            case SHIFT_CLICK: return setting.shiftClick;
-            case MIDDLE_CLICK: return setting.middleClick;
-            case DOUBLE_CLICK: return setting.doubleClick;
-            case SHIFT_RIGHT_CLICK: return setting.shiftRightClick;
-            case LEFT_CLICK: return setting.leftClick;
-            case RIGHT_CLICK: return setting.rightClick;
-            case OUTSIDE: return setting.leftClickOutside;
-            case AUTO_INV_SORT: return setting.invSortingEnabled;
-            case AUTO_SORT: return setting.sortingEnabled;
-            default: return false;
-        }
+        return switch (this) {
+            case SHIFT_CLICK -> setting.shiftClick;
+            case MIDDLE_CLICK -> setting.middleClick;
+            case DOUBLE_CLICK -> setting.doubleClick;
+            case SHIFT_RIGHT_CLICK -> setting.shiftRightClick;
+            case LEFT_CLICK -> setting.leftClick;
+            case RIGHT_CLICK -> setting.rightClick;
+            case OUTSIDE -> setting.leftClickOutside;
+            case AUTO_INV_SORT -> setting.invSortingEnabled;
+            case AUTO_SORT -> setting.sortingEnabled;
+        };
     }
 }

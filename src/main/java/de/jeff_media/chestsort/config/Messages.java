@@ -1,88 +1,68 @@
 package de.jeff_media.chestsort.config;
 
 import de.jeff_media.chestsort.ChestSortPlugin;
-import com.jeff_media.jefflib.TextUtils;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.configuration.file.FileConfiguration;
 
-public class Messages {
-	public static String MSG_GUI_LEFTCLICKOUTSIDE, MSG_CONTAINER_SORTED;
+public final class Messages {
 
-    // Messages can be customized in the config.yml
-	// To avoid problems with missing messages in the config, the default messages
-	// are
-	// hardcoded.
-	// When creating pull requests that feature a message to the player, please
-	// stick to this scheme
+    public static Component CONTAINER_SORTED;
+    public static Component ACTIVATED, DEACTIVATED, INV_ACTIVATED, INV_DEACTIVATED,
+            COMMAND_HINT_ENABLE, COMMAND_HINT_DISABLE, PLAYERS_ONLY, PLAYER_INVENTORY_SORTED;
 
-	public static String MSG_ACTIVATED, MSG_DEACTIVATED, MSG_INVACTIVATED, MSG_INVDEACTIVATED, MSG_COMMANDMESSAGE, MSG_COMMANDMESSAGE2, MSG_PLAYERSONLY,
-			MSG_PLAYERINVSORTED, MSG_INVALIDOPTIONS;
+    public static Component GUI_ENABLED, GUI_DISABLED, GUI_MIDDLE_CLICK, GUI_SHIFT_CLICK, GUI_DOUBLE_CLICK,
+            GUI_LEFT_CLICK_OUTSIDE, GUI_SHIFT_RIGHT_CLICK, GUI_LEFT_CLICK, GUI_RIGHT_CLICK;
 
-	public static String MSG_GUI_ENABLED, MSG_GUI_DISABLED;
+    public static Component HOTKEYS_DISABLED = Component.text("[ChestSort] Hotkeys have been disabled by the admin.", NamedTextColor.RED);
 
-	public static String MSG_GUI_MIDDLECLICK, MSG_GUI_SHIFTCLICK, MSG_GUI_DOUBLECLICK, MSG_GUI_SHIFTRIGHTCLICK, MSG_GUI_LEFTCLICK, MSG_GUI_RIGHTCLICK;
+    private static String invalidOptionsTemplate = "&cError: Unknown option %s. Valid options are %s.";
 
-	public static String MSG_ERR_HOTKEYSDISABLED;
+    private Messages() {
+    }
 
-	public Messages() {
+    public static void reload() {
+        FileConfiguration config = ChestSortPlugin.getInstance().getConfig();
 
-		ChestSortPlugin plugin = ChestSortPlugin.getInstance();
+        CONTAINER_SORTED = legacy(config.getString("message-container-sorted", "&aContainer sorted!"));
+        ACTIVATED = legacy(config.getString("message-sorting-enabled", "&7Automatic chest sorting has been &aenabled&7.&r"));
+        DEACTIVATED = legacy(config.getString("message-sorting-disabled", "&7Automatic chest sorting has been &cdisabled&7.&r"));
+        INV_ACTIVATED = legacy(config.getString("message-inv-sorting-enabled", "&7Automatic inventory sorting has been &aenabled&7.&r"));
+        INV_DEACTIVATED = legacy(config.getString("message-inv-sorting-disabled", "&7Automatic inventory sorting has been &cdisabled&7.&r"));
+        COMMAND_HINT_ENABLE = legacy(config.getString("message-when-using-chest", "&7Hint: Type &6/chestsort&7 to enable automatic chest sorting."));
+        COMMAND_HINT_DISABLE = legacy(config.getString("message-when-using-chest2", "&7Hint: Type &6/chestsort&7 to disable automatic chest sorting."));
+        PLAYERS_ONLY = legacy(config.getString("message-error-players-only", "&cError: This command can only be run by players.&r"));
+        PLAYER_INVENTORY_SORTED = legacy(config.getString("message-player-inventory-sorted", "&7Your inventory has been sorted."));
 
-		MSG_CONTAINER_SORTED = TextUtils.format( plugin.getConfig()
-				.getString("message-container-sorted","&aContainer sorted!"));
+        GUI_ENABLED = legacy(config.getString("message-gui-enabled", "&aEnabled"));
+        GUI_DISABLED = legacy(config.getString("message-gui-disabled", "&cDisabled"));
+        GUI_MIDDLE_CLICK = legacy(config.getString("message-gui-middle-click", "Middle-Click"));
+        GUI_SHIFT_CLICK = legacy(config.getString("message-gui-shift-click", "Shift + Click"));
+        GUI_DOUBLE_CLICK = legacy(config.getString("message-gui-double-click", "Double-Click"));
+        GUI_LEFT_CLICK_OUTSIDE = legacy(config.getString("message-gui-left-click-outside", "Left-Click"));
+        GUI_SHIFT_RIGHT_CLICK = legacy(config.getString("message-gui-shift-right-click", "Shift + Right-Click"));
+        GUI_LEFT_CLICK = legacy(config.getString("message-gui-left-click", "Fill Chest (Left-Click/Double-Left-Click)"));
+        GUI_RIGHT_CLICK = legacy(config.getString("message-gui-right-click", "Unload Chest (Right-Click/Double-Right-Click)"));
 
-		MSG_ACTIVATED = TextUtils.format( plugin.getConfig()
-				.getString("message-sorting-enabled", "&7Automatic chest sorting has been &aenabled&7.&r"));
+        invalidOptionsTemplate = config.getString("message-error-invalid-options", "&cError: Unknown option %s. Valid options are %s.");
+    }
 
-		MSG_DEACTIVATED = TextUtils.format( plugin.getConfig()
-				.getString("message-sorting-disabled", "&7Automatic chest sorting has been &cdisabled&7.&r"));
-		
-		MSG_INVACTIVATED = TextUtils.format( plugin.getConfig()
-				.getString("message-inv-sorting-enabled", "&7Automatic inventory sorting has been &aenabled&7.&r"));
+    public static Component invalidOptions(String given, String validOptions) {
+        String withGiven = replaceFirstPlaceholder(invalidOptionsTemplate, given);
+        String withBoth = replaceFirstPlaceholder(withGiven, validOptions);
+        return legacy(withBoth);
+    }
 
-		MSG_INVDEACTIVATED = TextUtils.format( plugin.getConfig()
-				.getString("message-inv-sorting-disabled", "&7Automatic inventory sorting has been &cdisabled&7.&r"));
+    private static String replaceFirstPlaceholder(String template, String value) {
+        int index = template.indexOf("%s");
+        if (index < 0) {
+            return template;
+        }
+        return template.substring(0, index) + value + template.substring(index + 2);
+    }
 
-		MSG_COMMANDMESSAGE = TextUtils.format( plugin.getConfig().getString(
-				"message-when-using-chest", "&7Hint: Type &6/chestsort&7 to enable automatic chest sorting."));
-
-		MSG_COMMANDMESSAGE2 = TextUtils.format( plugin.getConfig().getString(
-				"message-when-using-chest2", "&7Hint: Type &6/chestsort&7 to disable automatic chest sorting."));
-
-		MSG_PLAYERSONLY = TextUtils.format( plugin.getConfig()
-				.getString("message-error-players-only", "&cError: This command can only be run by players.&r"));
-
-		MSG_PLAYERINVSORTED = TextUtils.format(
-				plugin.getConfig().getString("message-player-inventory-sorted", "&7Your inventory has been sorted."));
-
-		MSG_INVALIDOPTIONS = TextUtils.format( plugin.getConfig()
-				.getString("message-error-invalid-options", "&cError: Unknown option %s. Valid options are %s."));
-		
-		MSG_GUI_ENABLED = TextUtils.format( plugin.getConfig()
-				.getString("message-gui-enabled","&aEnabled"));
-		
-		MSG_GUI_DISABLED = TextUtils.format( plugin.getConfig()
-				.getString("message-gui-disabled","&cDisabled"));
-		
-		MSG_GUI_MIDDLECLICK = TextUtils.format( plugin.getConfig()
-				.getString("message-gui-middle-click","Middle-Click"));
-		
-		MSG_GUI_SHIFTCLICK = TextUtils.format( plugin.getConfig()
-				.getString("message-gui-shift-click","Shift + Click"));
-		
-		MSG_GUI_DOUBLECLICK = TextUtils.format( plugin.getConfig()
-				.getString("message-gui-double-click","Double-Click"));
-
-		MSG_GUI_LEFTCLICKOUTSIDE = TextUtils.format( plugin.getConfig()
-				.getString("message-gui-left-click-outside", "Left-Click"));
-		
-		MSG_GUI_SHIFTRIGHTCLICK = TextUtils.format( plugin.getConfig()
-				.getString("message-gui-shift-right-click","Shift + Right-Click"));
-		
-		MSG_GUI_LEFTCLICK = TextUtils.format( plugin.getConfig().getString("message-gui-left-click","Fill Chest (Left-Click/Double-Left-Click)"));
-		
-		MSG_GUI_RIGHTCLICK = TextUtils.format( plugin.getConfig().getString("message-gui-right-click","Unload Chest (Right-Click/Double-Right-Click)"));
-		
-		MSG_ERR_HOTKEYSDISABLED = ChatColor.RED + "[ChestSort] Hotkeys have been disabled by the admin.";
-	}
-
+    private static Component legacy(String text) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+    }
 }

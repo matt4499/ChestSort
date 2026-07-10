@@ -7,17 +7,17 @@ import org.bukkit.entity.Mule;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-public class LlamaUtils {
+public final class LlamaUtils {
+
+    private LlamaUtils() {
+    }
 
     public static int getLlamaChestSize(ChestedHorse llama) {
-        if (llama == null) {
+        if (llama == null || !llama.isCarryingChest()) {
             return -1;
         }
-        if (!llama.isCarryingChest()) {
-            return -1;
-        }
-        if (llama instanceof Llama) {
-            return ((Llama) llama).getStrength() * 3;
+        if (llama instanceof Llama l) {
+            return l.getStrength() * 3;
         }
         if (llama instanceof Donkey || llama instanceof Mule) {
             return 15;
@@ -26,7 +26,6 @@ public class LlamaUtils {
     }
 
     public static boolean belongsToLlama(Inventory inv, InventoryHolder holder) {
-        return inv != null && holder != null && holder.getClass().getName().endsWith("CraftLlama");
+        return inv != null && holder instanceof ChestedHorse chestedHorse && chestedHorse.isCarryingChest();
     }
-
 }

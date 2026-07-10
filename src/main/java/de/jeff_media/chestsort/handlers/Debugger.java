@@ -19,22 +19,20 @@ public class Debugger implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onInventoryClickEvent(InventoryClickEvent e) {
-    	if(plugin.isDebug()) {
-			// Debug
-			plugin.debug(" ");
-			plugin.debug("InventoryClickEvent:");
-			plugin.debug("- Holder: " + e.getInventory().getHolder());
-			if (e.getInventory().getHolder() != null) {
-				plugin.debug("- Holder class: " + e.getInventory().getHolder().getClass());
-			}
-			plugin.debug("- Slot: " + e.getRawSlot());
-			plugin.debug("- Left-Click: " + e.isLeftClick());
-			plugin.debug("- Right-Click: " + e.isRightClick());
-			plugin.debug("- Shift-Click: " + e.isShiftClick());
-			plugin.debug(" ");
-		}
-
+    public void onInventoryClickEvent(InventoryClickEvent event) {
+        if (!plugin.isDebug()) {
+            return;
+        }
+        plugin.debug(" ");
+        plugin.debug("InventoryClickEvent:");
+        plugin.debug("- Holder: " + event.getInventory().getHolder());
+        if (event.getInventory().getHolder() != null) {
+            plugin.debug("- Holder class: " + event.getInventory().getHolder().getClass());
+        }
+        plugin.debug("- Slot: " + event.getRawSlot());
+        plugin.debug("- Left-Click: " + event.isLeftClick());
+        plugin.debug("- Right-Click: " + event.isRightClick());
+        plugin.debug("- Shift-Click: " + event.isShiftClick());
+        plugin.debug(" ");
     }
-
 }

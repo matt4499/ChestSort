@@ -1,39 +1,18 @@
 package de.jeff_media.chestsort.data;
 
-
 import de.jeff_media.chestsort.utils.Utils;
 
-public class CategoryLinePair {
-	final String categoryName;
-	final String formattedPosition;
-	final boolean sticky;
-	final short position;
-	
-	public CategoryLinePair(String categoryName,short position) {
-		this(categoryName,position,false);
-	}
-	
-	public CategoryLinePair(String categoryName,short position,boolean sticky) {
-		this.categoryName=categoryName;
-		this.formattedPosition= Utils.shortToStringWithLeadingZeroes(position);
-		this.position=position;
-		this.sticky=sticky;
-	}
-	
-	public String getCategoryNameSticky() {
-		if(sticky) return getCategoryName() + "~" + getFormattedPosition();
-		return getCategoryName();
-	}
+public record CategoryLinePair(String categoryName, short position, boolean sticky) {
 
-	public String getCategoryName() {
-		return categoryName;
-	}
+    public CategoryLinePair(String categoryName, short position) {
+        this(categoryName, position, false);
+    }
 
-	public String getFormattedPosition() {
-		return formattedPosition;
-	}
-	
-	public int getPosition() {
-		return position;
-	}
+    public String formattedPosition() {
+        return Utils.shortToStringWithLeadingZeroes(position);
+    }
+
+    public String categoryNameSticky() {
+        return sticky ? categoryName + "~" + formattedPosition() : categoryName;
+    }
 }

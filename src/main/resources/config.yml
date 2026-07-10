@@ -47,16 +47,6 @@
 #                                                   leftclick, rightlick, outside
 
 
-###############################
-#######  Placeholders   #######
-###############################
-
-# When using PlaceholderAPI, you can use the following placeholders:
-
-# %chestsort_sortingenabled%    - true if this player has automatic sorting enabled for containers
-# %chestsort_invsortingenabled% - true if this player has automatic sorting enabled for the player's inventory
-
-
 ############################
 ##### Default settings #####
 ############################
@@ -198,22 +188,6 @@ additional-hotkeys:
   # Permission: chestsort.hotkey.leftclick
   right-click: false
 
-##########################
-##### Update Checker #####
-##########################
-
-# Checks for updates (asynchronously).
-# When enabled, a message is printed in the console if a new
-# version has been found, and OPs will be notified when they join the server 
-# When set to true, check for updates on startup and every X hours (see "check-interval" below)
-# When set to on-startup, only check on server startup
-# When set to false, don't check for updates
-check-for-updates: true
-
-# When you set "check-for-updates" to true, you can define the amount
-# of hours inbetween each update check.
-check-interval: 4
-
 #########################
 #### Disabled Worlds ####
 #########################
@@ -231,83 +205,15 @@ check-interval: 4
 disabled-worlds:
 
 ##########################
-#####  Plugin hooks  #####
+##### Other Settings #####
 ##########################
 
-# ChestSort can hook into other plugins to allow better sorting
-# for items belonging to 3rd party plugins.
-# You do NOT have to disable the hooks for plugins you don't have
-# installed. ChestSort will automatically check if the plugins
-# are installed.
-
-##### CrackShot ##### -> https://www.spigotmc.org/resources/crackshot-guns.48301/
-# When CrackShot is installed, all CrackShot weapons will be
-# grouped together and sorted by their name
-hook-crackshot: true
-
-# You can define a custom name that will be used as prefix
-# for all CrackShot weapon names.
-# E.g. when you set this to "crackshot_weapon", an AK-47
-# will be called "crackshot_weapon_AK-47"
-hook-crackshot-prefix: "crackshot_weapon"
-
-##### InventoryPages ##### -> https://www.spigotmc.org/resources/inventorypages.32432/
-# When InventoryPages is installed, ChestSort will not sort
-# the "Next Page" and "Prev Page" buttons. You should not
-# disable this behaviour unless you know what you are doing!
-hook-inventorypages: true
-
-##### Minepacks ##### -> https://www.spigotmc.org/resources/minepacks-backpack-plugin-mc-1-7-1-15.19286/
-# When Minepacks version 2.3.8+ is installed, ChestSort can detect your
-# backpacks and sort them like a regular chest.
-hook-minepacks: true
-
-##### PlayerVaults and similar plugins #####
-# When PlayerVaults or similar plugins are installed, ChestSort can sort your
-# player vaults just like regular chests.
-hook-playervaults: true
-
-##### EnderContainers ##### -> https://www.spigotmc.org/resources/endercontainers.4750/
-# When EnderContainers version 2.2.1+ is installed, ChestSort can detect your
-# enderchests and sort them like regular chests.
-hook-endercontainers: true
-
-##### CrateReloaded #####
-# Prevents the player from using hotkeys on a crate
-hook-cratereloaded: true
-
-##### GoldenCrates #####
-# Prevents the player from using hotkeys on a crate
-hook-goldencrates: true
-
-##### HeadDatabase #####
-# Prevents the player from using hotkeys on the HeadDatabase GUI
-hook-headdatabase: true
-
-##### Slimefun #####
-# Some versions of Slimefun fail to prevent putting the backpack into itself
-# when you do so immediately after ChestSort moved a backpack. You can
-# prevent ChestSort from moving Slimefun backpacks until they fixed this.
-dont-move-slimefun-backpacks: false
-
-##### AdvancedChests #####
-# When AdvancedChests is installed, ChestSort will not sort
-# the buttons from the bottom row. You should not
-# disable this behaviour unless you know what you are doing!
-hook-advancedchests: true
-
-##### Other backpack plugins #####
-# ChestSort is able to detect backpacks from most backpack
-# plugins like ShulkerPacks or Better Shulker Boxes.
-# This detection is always enabled, you cannot turn it off.
-
-##### Other GUI plugins #####
-# ChestSort tries to detect if an inventory belongs to a
-# 3rd party plugin's GUI and then prevents it from being sorted.
-# If you encounter any problems, like a sortable GUI inventory,
-# please open a new issue at Github:
-# https://github.com/JEFF-Media-GbR/Spigot-ChestSort/issues
-hook-generic: true
+##### Generic GUI detection #####
+# ChestSort tries to detect if an inventory belongs to a 3rd party plugin's
+# GUI (based on its InventoryHolder class name containing "gui" or "menu")
+# and then prevents it from being sorted. This detection is always enabled
+# and cannot be turned off. Use blocked-inventory-holders-regex below for
+# GUIs that this heuristic does not catch.
 
 ##### Plugins not using an InventoryHolder #####
 # When you have a plugin that uses "null" as InventoryHolder for their
@@ -317,13 +223,11 @@ hook-generic: true
 prevent-sorting-null-inventories: false
 
 ##### Protection Plugins #####
-# ChestSort checks whether a player is allowed to interact with a block
-# before attempting to sort a container when using the "outside"/"left-click-block"
-# hotkey. This can result in messages from WorldGuard, CoreProtect, etc. being
-# send to the player. To avoid this, set the following setting to true.
-# This can however lead to some warnings from other plugins that do not
-# properly check a Players' class before casting it to "CraftPlayer".
-# Although this should NOT cause ANY problems, it's disabled by default.
+# ChestSort checks whether a player is allowed to break a block before
+# attempting to sort a container when using the "outside"/"left-click-block"
+# hotkey (by firing a throwaway BlockBreakEvent). This can result in
+# messages from WorldGuard, CoreProtect, etc. being sent to the player.
+# Set this to true to suppress that check being visible to protection plugins.
 mute-protection-plugins: false
 
 ##### Generic Detection by InventoryHolder #####
@@ -862,5 +766,5 @@ debug2: false
 log: false
 
 # Do not change the following lines!
-config-version: ${config.version}
-plugin-version: ${project.version}
+config-version: @configVersion@
+plugin-version: @version@

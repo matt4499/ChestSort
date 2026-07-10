@@ -11,6 +11,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This event is called whenever ChestSort attempts to sort an inventory. Can be cancelled to prevent ChestSort from manipulating this inventory.
@@ -19,11 +21,12 @@ public class ChestSortEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
     final Inventory inv;
-    // For each ItemStack, a map of "{placeholder}", "sortString" pairs.
     Map<ItemStack, Map<String, String>> invSortableMaps;
     boolean cancelled = false;
     Location loc;
     HumanEntity p;
+    final List<ItemStack> unmovableItemStacks;
+    final List<Integer> unmovableSlots;
 
     public List<ItemStack> getUnmovableItemStacks() {
         return unmovableItemStacks;
@@ -33,10 +36,7 @@ public class ChestSortEvent extends Event implements Cancellable {
         return unmovableSlots;
     }
 
-    List<ItemStack> unmovableItemStacks;
-    List<Integer> unmovableSlots;
-
-    public ChestSortEvent(Inventory inv) {
+    public ChestSortEvent(@NotNull Inventory inv) {
         this.inv = inv;
         this.unmovableItemStacks = new ArrayList<>();
         this.unmovableSlots = new ArrayList<>();
@@ -50,29 +50,33 @@ public class ChestSortEvent extends Event implements Cancellable {
      * Returns the location associated with this event. Might be null
      * @return Location associated with this event, or null if no location has been set
      */
+    @Nullable
     public Location getLocation() {
         return loc;
     }
 
     /**
      * Sets the location associated with this event
-     * @param loc
      */
-    public void setLocation(Location loc) { this.loc=loc; }
+    public void setLocation(@Nullable Location loc) {
+        this.loc = loc;
+    }
 
     /**
      * Returns the inventory associated with this event
      * @return Inventory to be sorted
      */
+    @NotNull
     public Inventory getInventory() {
         return inv;
     }
 
+    @Nullable
     public Map<ItemStack, Map<String, String>> getSortableMaps() {
         return invSortableMaps;
     }
 
-    public void setSortableMaps(Map<ItemStack, Map<String, String>> sortableMap) {
+    public void setSortableMaps(@NotNull Map<ItemStack, Map<String, String>> sortableMap) {
         invSortableMaps = sortableMap;
     }
 
@@ -80,6 +84,7 @@ public class ChestSortEvent extends Event implements Cancellable {
      * Returns the player associated with this event. Might be null
      * @return Player associated with this event, or null if no player has been set
      */
+    @Nullable
     public HumanEntity getPlayer() {
         return p;
     }
@@ -88,7 +93,9 @@ public class ChestSortEvent extends Event implements Cancellable {
      * Sets the player associated with this event
      * @param p Player associated with this event, can be null
      */
-    public void setPlayer(HumanEntity p) { this.p=p; }
+    public void setPlayer(@Nullable HumanEntity p) {
+        this.p = p;
+    }
 
     /**
      * Prevents ChestSort from sorting/moving this specific slot
@@ -140,6 +147,8 @@ public class ChestSortEvent extends Event implements Cancellable {
         return unmovableItemStacks.contains(itemStack);
     }
 
+    @NotNull
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }
@@ -157,6 +166,4 @@ public class ChestSortEvent extends Event implements Cancellable {
     public void setCancelled(boolean cancel) {
         cancelled = cancel;
     }
-
-
 }

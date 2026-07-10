@@ -1,17 +1,15 @@
-main: ${spigot.main}
-name: ${project.name}
-version: ${project.version}
-api-version: "1.13"
-description: "${project.description}"
+main: @main@
+name: @name@
+version: @version@
+api-version: "26.2"
+description: "@description@"
 folia-supported: true
 authors:
   - mfnalex
   - JEFF Media GbR
-website: ${project.url}
-prefix: ${spigot.prefix}
+website: @url@
+prefix: @prefix@
 database: false
-loadbefore: [InvUnload]
-softdepend: [CrackShot,InventoryPages,Minepacks,PlaceholderAPI,AdvancedChests,ShulkerPacks]
 commands:
   sort:
     description: Toggle automatic chest sorting or change your hotkey settings
@@ -35,7 +33,7 @@ commands:
             /<command> hotbar -- Sort your hotbar
             /<command> all -- Sort your inventory and hotbar
             /<command> help -- Shows help about this command
-    aliases: [invsort,inventorysort]
+    aliases: [invsort, inventorysort]
     permission: chestsort.use.inventory
 permissions:
   chestsort.use:
@@ -46,6 +44,9 @@ permissions:
     description: Allows to reload the config via /chestsort reload
   chestsort.resetplayersettings:
     description: Allows to reset every player's sorting settings
+  chestsort.debug:
+    description: Allows enabling debug mode via /chestsort debug
+    default: op
   chestsort.hotkey.shiftclick:
     default: true
   chestsort.hotkey.middleclick:

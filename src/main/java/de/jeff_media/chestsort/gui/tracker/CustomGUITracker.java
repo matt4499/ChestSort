@@ -22,6 +22,5 @@ public class CustomGUITracker {
 
     public static void close(InventoryView view) {
         guis.remove(view);
-        // view.close();
     }
 }

@@ -1,68 +1,67 @@
-# You can customize the GUI here. Every single item is 100% customizable, including
-# their slot numbers, custom model data, custom base64 strings for heads, etc.
-
-# The default config uses Yaml Anchors so you don't have to define the same item
-# over and over again. I wrote a tiny explanation about them here:
-# https://wiki.jeff-media.com/books/general-information/page/yaml-anchors
-
+# You can customize the hotkey settings GUI here. Every item is fully
+# customizable, including slot numbers, custom model data and skull textures.
+#
+# The default config uses YAML anchors so you don't have to define the same
+# item over and over again: https://wiki.jeff-media.com/books/general-information/page/yaml-anchors
+#
+# Text fields (title, display-name, lore) use MiniMessage formatting:
+# https://docs.advntr.dev/minimessage/format.html
+#
 # Items can be defined inside the "items" section using the following values:
 #   material: DIAMOND
-#   display-name: "My Diamond"
+#   display-name: "<white>My Diamond"
 #   lore:
 #     - "First line"
-#     - "Second line, etc."
-#     - "&cRed line"
-#     - "<#ff0000>Red hex color"
-#     - "<#ff0000>Hex gradient<#/ffffff>"
+#     - "<red>Red line"
+#     - "<gradient:#ff0000:#ffffff>Red-to-white gradient"
 #   amount: 1
 #   base64: "<base64 string for player heads>"
 #   custom-model-data: 2
-#   damage: 0
 #   enchantments:
 #     unbreaking: 3
 #     efficiency: 5
 #   commands:
 #     player:
-#       - "say Hello" # command that will be run as the player
+#       - "say Hello"
 #     console:
-#       - "tell {player} Hello" # command that will be run as the console
+#       - "tell {player} Hello"
+#
+# You can then reference the item in the "slots" section using its name.
 
-# You can then reference the item in the "slots" section using their defined name.
-
-title: "<#000000>&l[<#007700>&lChest<#339933>&lSort<#000000>&l] &rSettings"
+title: "<bold><color:#000000>[</color><color:#007700>Chest</color><color:#339933>Sort</color><color:#000000>]</color></bold> Settings"
 size: 45
 items:
   autosorting-enabled:
-    display-name: &autosorting-name "<#2e86c1>&lAutomatic Sorting<#/85c1e9>"
+    display-name: &autosorting-name "<gradient:#2e86c1:#85c1e9><bold>Automatic Sorting</bold></gradient>"
     material: PLAYER_HEAD
     base64: &base64-enabled "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19"
     lore:
-      - &lore-enabled "<#229954>&lEnabled<#/7dcea0>"
-      - &autosorting-lore-1 "<#d5dbdb>Automatically sorts all chests,"
-      - &autosorting-lore-2 "<#d5dbdb>barrels etc when you use them."
+      - &lore-enabled "<gradient:#229954:#7dcea0><bold>Enabled</bold></gradient>"
+      - &autosorting-lore-1 "<color:#d5dbdb>Automatically sorts all chests,</color>"
+      - &autosorting-lore-2 "<color:#d5dbdb>barrels etc when you use them.</color>"
   autosorting-disabled:
     display-name: *autosorting-name
     material: PLAYER_HEAD
     base64: &base64-disabled "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGU0YjhiOGQyMzYyYzg2NGUwNjIzMDE0ODdkOTRkMzI3MmE2YjU3MGFmYmY4MGMyYzViMTQ4Yzk1NDU3OWQ0NiJ9fX0="
     lore:
-      - &lore-disabled "<#a93226>&lDisabled<#/e74c3c>"
+      - &lore-disabled "<gradient:#a93226:#e74c3c><bold>Disabled</bold></gradient>"
       - *autosorting-lore-1
       - *autosorting-lore-2
   autosorting-nopermission: &nopermission
     display-name: *autosorting-name
     material: BARRIER
     lore:
-      - "<#a93226>No Permission<#/e74c3c>"
+      - "<gradient:#a93226:#e74c3c>No Permission</gradient>"
 
 
   autoinvsorting-enabled:
-    display-name: &autoinvsorting-name "<#2e86c1>&lAutomatic Inventory Sorting<#/85c1e9>"
+    display-name: &autoinvsorting-name "<gradient:#2e86c1:#85c1e9><bold>Automatic Inventory Sorting</bold></gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &autoinvsorting-lore-1 "<#d5dbdb>Automatically sorts your player"
-      - &autoinvsorting-lore-2 "<#d5dbdb>inventory when you open it."
+      - &autoinvsorting-lore-1 "<color:#d5dbdb>Automatically sorts your player</color>"
+      - &autoinvsorting-lore-2 "<color:#d5dbdb>inventory when you open it.</color>"
   autoinvsorting-disabled:
     display-name: *autoinvsorting-name
     material: PLAYER_HEAD
@@ -77,13 +76,13 @@ items:
 
 
   shiftclick-enabled:
-    display-name: &shiftclick-name "<#2e86c1>&lShift-Click<#/85c1e9>"
+    display-name: &shiftclick-name "<gradient:#2e86c1:#85c1e9><bold>Shift-Click</bold></gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &shiftclick-lore-1 "<#d5dbdb>Sorts an inventory using Shift-click"
-      - &shiftclick-lore-2 "<#d5dbdb>on an empty slot."
+      - &shiftclick-lore-1 "<color:#d5dbdb>Sorts an inventory using Shift-click</color>"
+      - &shiftclick-lore-2 "<color:#d5dbdb>on an empty slot.</color>"
   shiftclick-disabled:
     display-name: *shiftclick-name
     material: PLAYER_HEAD
@@ -98,13 +97,13 @@ items:
 
 
   middleclick-enabled:
-    display-name: &middleclick-name "<#2e86c1>&lMiddle-Click<#/85c1e9>"
+    display-name: &middleclick-name "<gradient:#2e86c1:#85c1e9><bold>Middle-Click</bold></gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &middleclick-lore-1 "<#d5dbdb>Sorts an inventory using Middle-click"
-      - &middleclick-lore-2 "<#d5dbdb>(mousewheel) on any slot."
+      - &middleclick-lore-1 "<color:#d5dbdb>Sorts an inventory using Middle-click</color>"
+      - &middleclick-lore-2 "<color:#d5dbdb>(mousewheel) on any slot.</color>"
   middleclick-disabled:
     display-name: *middleclick-name
     material: PLAYER_HEAD
@@ -119,13 +118,13 @@ items:
 
 
   doubleclick-enabled:
-    display-name: &doubleclick-name "<#2e86c1>&lDouble-Click<#/85c1e9>"
+    display-name: &doubleclick-name "<gradient:#2e86c1:#85c1e9><bold>Double-Click</bold></gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &doubleclick-lore-1 "<#d5dbdb>Sorts an inventory using Double-click"
-      - &doubleclick-lore-2 "<#d5dbdb>on an empty slot."
+      - &doubleclick-lore-1 "<color:#d5dbdb>Sorts an inventory using Double-click</color>"
+      - &doubleclick-lore-2 "<color:#d5dbdb>on an empty slot.</color>"
   doubleclick-disabled:
     display-name: *doubleclick-name
     material: PLAYER_HEAD
@@ -140,13 +139,13 @@ items:
 
 
   shiftrightclick-enabled:
-    display-name: &shiftrightclick-name "<#2e86c1>&lShift-Right-Click<#/85c1e9>"
+    display-name: &shiftrightclick-name "<gradient:#2e86c1:#85c1e9><bold>Shift-Right-Click</bold></gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &shiftrightclick-lore-1 "<#d5dbdb>Sorts an inventory using Shift-Right-click"
-      - &shiftrightclick-lore-2 "<#d5dbdb>on an empty slot."
+      - &shiftrightclick-lore-1 "<color:#d5dbdb>Sorts an inventory using Shift-Right-click</color>"
+      - &shiftrightclick-lore-2 "<color:#d5dbdb>on an empty slot.</color>"
   shiftrightclick-disabled:
     display-name: *shiftrightclick-name
     material: PLAYER_HEAD
@@ -161,13 +160,13 @@ items:
 
 
   outside-enabled:
-    display-name: &outside-name "<#2e86c1>&lLeft-Click Block<#/85c1e9>"
+    display-name: &outside-name "<gradient:#2e86c1:#85c1e9><bold>Left-Click Block</bold></gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &outside-lore-1 "<#d5dbdb>Sorts a chest, barrel etc. by"
-      - &outside-lore-2 "<#d5dbdb>left-clicking it."
+      - &outside-lore-1 "<color:#d5dbdb>Sorts a chest, barrel etc. by</color>"
+      - &outside-lore-2 "<color:#d5dbdb>left-clicking it.</color>"
   outside-disabled:
     display-name: *outside-name
     material: PLAYER_HEAD
@@ -182,16 +181,16 @@ items:
 
 
   leftclick-enabled:
-    display-name: &leftclick-name "<#2e86c1>&lFill Chest<#/85c1e9>"
+    display-name: &leftclick-name "<gradient:#2e86c1:#85c1e9><bold>Fill Chest</bold></gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &leftclick-lore-1 "<#d5dbdb>Fill a chest with matching items by"
-      - &leftclick-lore-2 "<#d5dbdb>left-clicking outside the opened inventory."
-      - &leftclick-lore-3 "<#d5dbdb>Fill a chest with all items (except your"
-      - &leftclick-lore-4 "<#d5dbdb>hotbar) by double-left-clicking outside"
-      - &leftclick-lore-5 "<#d5dbdb>the opened inventory."
+      - &leftclick-lore-1 "<color:#d5dbdb>Fill a chest with matching items by</color>"
+      - &leftclick-lore-2 "<color:#d5dbdb>left-clicking outside the opened inventory.</color>"
+      - &leftclick-lore-3 "<color:#d5dbdb>Fill a chest with all items (except your</color>"
+      - &leftclick-lore-4 "<color:#d5dbdb>hotbar) by double-left-clicking outside</color>"
+      - &leftclick-lore-5 "<color:#d5dbdb>the opened inventory.</color>"
   leftclick-disabled:
     display-name: *leftclick-name
     material: PLAYER_HEAD
@@ -209,16 +208,16 @@ items:
 
 
   rightclick-enabled:
-    display-name: &rightclick-name "<#2e86c1>Empty Chest<#/85c1e9>"
+    display-name: &rightclick-name "<gradient:#2e86c1:#85c1e9>Empty Chest</gradient>"
     material: PLAYER_HEAD
     base64: *base64-enabled
     lore:
       - *lore-enabled
-      - &rightclick-lore-1 "<#d5dbdb>Take matching items from a chest by"
-      - &rightclick-lore-2 "<#d5dbdb>right-clicking outside the opened"
-      - &rightclick-lore-3 "<#d5dbdb>inventory. Take all items from a chest"
-      - &rightclick-lore-4 "<#d5dbdb>by double-left-clicking outside the"
-      - &rightclick-lore-5 "<#d5dbdb>opened inventory"
+      - &rightclick-lore-1 "<color:#d5dbdb>Take matching items from a chest by</color>"
+      - &rightclick-lore-2 "<color:#d5dbdb>right-clicking outside the opened</color>"
+      - &rightclick-lore-3 "<color:#d5dbdb>inventory. Take all items from a chest</color>"
+      - &rightclick-lore-4 "<color:#d5dbdb>by double-left-clicking outside the</color>"
+      - &rightclick-lore-5 "<color:#d5dbdb>opened inventory</color>"
   rightclick-disabled:
     display-name: *rightclick-name
     material: PLAYER_HEAD
@@ -238,7 +237,7 @@ items:
 slots:
   0: &placeholder
     material: BLACK_STAINED_GLASS_PANE
-    display-name: "&a" # Prevents showing the item's name
+    display-name: " "
   1: *placeholder
   2: *placeholder
   3: *placeholder
