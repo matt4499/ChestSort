@@ -1,7 +1,7 @@
 main: @main@
 name: @name@
 version: @version@
-api-version: "26.2"
+api-version: "1.21"
 description: "@description@"
 folia-supported: true
 authors:

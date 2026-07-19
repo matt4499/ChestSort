@@ -387,8 +387,21 @@ public final class ChestSortPlugin extends JavaPlugin {
     }
 
     private boolean getStoredBoolean(PersistentDataContainer pdc, String key, boolean fallback) {
-        Boolean stored = pdc.get(new NamespacedKey(this, key), PersistentDataType.BOOLEAN);
-        return stored != null ? stored : fallback;
+        NamespacedKey namespacedKey = new NamespacedKey(this, key);
+        try {
+            Boolean stored = pdc.get(namespacedKey, PersistentDataType.BOOLEAN);
+            return stored != null ? stored : fallback;
+        } catch (IllegalArgumentException e) {
+            // Legacy versions of ChestSort stored these values as a String (e.g. via NBTAPI),
+            // so an existing player's PDC entry may still be a StringTag instead of a ByteTag.
+            String legacy = pdc.get(namespacedKey, PersistentDataType.STRING);
+            if (legacy != null) {
+                boolean migrated = Boolean.parseBoolean(legacy);
+                pdc.set(namespacedKey, PersistentDataType.BOOLEAN, migrated);
+                return migrated;
+            }
+            return fallback;
+        }
     }
 
     private void setStoredBoolean(PersistentDataContainer pdc, String key, boolean value) {

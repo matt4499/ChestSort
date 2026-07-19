@@ -7,18 +7,20 @@ plugins {
 }
 
 group = "de.jeff_media"
-version = "15.0.0"
+version = "17.0.0"
 description = "Allows automatic chest sorting!"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 repositories {
-    maven("https://repo.papermc.io/repository/maven-public/")
-    mavenCentral()
+  maven {
+    name = "papermc"
+    url = uri("https://repo.papermc.io/repository/maven-public/")
+  }
 }
 
 dependencies {
@@ -50,5 +52,5 @@ tasks.jar {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(25)
+    options.release.set(21)
 }

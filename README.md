@@ -1,6 +1,6 @@
 # ChestSort
 
-A Paper plugin for automatic chest and inventory sorting. Requires Paper 26.2 (or newer) and Java 25.
+A Paper plugin for automatic chest and inventory sorting. Requires Paper 1.21.4 (or newer) and Java 21.
 
 ## Download & more information
 
